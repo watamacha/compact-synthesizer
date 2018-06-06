@@ -1,0 +1,1911 @@
+<patch-1.0 appVersion="1.0.12">
+   <obj type="gpio/serial/config" uuid="8ec617bbe7b552a58656442e87513d8b4c69833a" name="config_1" x="0" y="0">
+      <params/>
+      <attribs>
+         <combo attributeName="baudrate" selection="38400"/>
+      </attribs>
+   </obj>
+   <patchobj type="patch/object" uuid="7cdce2e1-6a84-4eda-a150-e706a84be47c" name="ardulink" x="0" y="42">
+      <params/>
+      <attribs>
+         <text attributeName="script">
+            <sText><![CDATA[void setup(void) {
+} 
+
+void loop(void) {
+    while(!sdGetWouldBlock(&SD2)) {
+        reBu = sdGet(&SD2)<<21;
+    	}
+ 	if(reBu < (144<<21)){
+    		draws[(reBu - reBu % (16<<21))>>25] = reBu % (16<<21);
+    	}else if(reBu > (247<<21)){
+    			perc[((reBu - (248<<21))>>22)] = (reBu % (2<<21));
+    	}else if (reBu > (245<<21)){
+		verb = (reBu % (2<<21));
+	}else if (reBu > (243<<21)){
+		chorw = (reBu % (2<<21));
+	}else if (reBu > (241<<21)){
+		chord = (reBu % (2<<21));
+	}
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    	chThdSleepMilliseconds(3);
+    
+}]]></sText>
+         </text>
+      </attribs>
+      <object id="patch/object" uuid="7cdce2e1-6a84-4eda-a150-e706a84be47c">
+         <sDescription>script with 2 inputs and 2 outputs, running in a separate thread, you must define &quot;void setup(void){}&quot; and &quot;void loop(void)&quot;</sDescription>
+         <author>Johannes Taelman</author>
+         <license>BSD</license>
+         <helpPatch>script.axh</helpPatch>
+         <inlets/>
+         <outlets>
+            <frac32 name="d1"/>
+            <frac32 name="d2"/>
+            <frac32 name="d3"/>
+            <frac32 name="d4"/>
+            <frac32 name="d5"/>
+            <frac32 name="d6"/>
+            <frac32 name="d7"/>
+            <frac32 name="d8"/>
+            <frac32 name="d9"/>
+            <bool32 name="pon"/>
+            <bool32 name="pvol"/>
+            <bool32 name="pdec"/>
+            <bool32 name="pharm"/>
+            <bool32 name="reverb"/>
+            <bool32 name="chordepth"/>
+            <bool32 name="chorwet"/>
+         </outlets>
+         <displays/>
+         <params/>
+         <attribs>
+            <text name="script"/>
+         </attribs>
+         <includes/>
+         <code.declaration><![CDATA[int32_t reBu;
+int draws[9];
+int perc[4];
+int verb;
+int chord;
+int chorw;
+attr_script
+msg_t ThreadX2(){
+  setup();
+  while(!chThdShouldTerminate()){
+     loop();
+     chThdSleepMilliseconds(1);
+  }
+  chThdExit((msg_t)0);
+}
+static msg_t ThreadX(void *arg) {
+((attr_parent *)arg)->ThreadX2();
+}
+WORKING_AREA(waThreadX, 1024);
+Thread *Thd;]]></code.declaration>
+         <code.init><![CDATA[draws[0] = 0;
+draws[1] = 0;
+draws[2] = 0;
+draws[3] = 0;
+draws[4] = 0;
+draws[5] = 0;
+draws[6] = 0;
+draws[7] = 0;
+draws[8] = 0;
+draws[9] = 0;
+reBu = 0;
+perc[0] = 0;
+perc[1] = 0;
+perc[2] = 0;
+perc[3] = 0;
+verb = 0;
+chord = 0;
+chorw = 0;
+  Thd = chThdCreateStatic(waThreadX, sizeof(waThreadX),
+                    NORMALPRIO, ThreadX, (void *)this);]]></code.init>
+         <code.dispose><![CDATA[chThdTerminate(Thd);
+chThdWait(Thd);]]></code.dispose>
+         <code.krate><![CDATA[outlet_d1 = this->draws[0];
+outlet_d2 = this->draws[1];
+outlet_d3 = this->draws[2];
+outlet_d4 = this->draws[3];
+outlet_d5 = this->draws[4];
+outlet_d6 = this->draws[5];
+outlet_d7 = this->draws[6];
+outlet_d8 = this->draws[7];
+outlet_d9 = this->draws[8];
+outlet_pon = this->perc[3];
+outlet_pvol = this->perc[2];
+outlet_pdec = this->perc[1];
+outlet_pharm = this->perc[0];
+outlet_reverb = this->verb;
+outlet_chordepth = this->chord;
+outlet_chorwet = this->chorw;]]></code.krate>
+      </object>
+   </patchobj>
+   <patcher type="patch/patcher" uuid="f7928428-2b7d-4713-adc4-309d1dd08c3a" name="voices" x="84" y="42">
+      <params/>
+      <attribs>
+         <combo attributeName="poly" selection="4"/>
+      </attribs>
+      <subpatch appVersion="1.0.12">
+         <obj type="midi/in/keyb" uuid="53b04874696932f38aceaa168bd5d9efb743716d" name="keyb_1" x="0" y="0">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db1" x="252" y="14">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db2" x="336" y="28">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db3" x="434" y="42">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="280" y="56">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db4" x="532" y="56">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_2" x="378" y="70">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db5" x="630" y="70">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_3" x="476" y="84">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db6" x="728" y="84">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_1" x="182" y="98">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_4" x="574" y="98">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db7" x="826" y="98">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_2" x="280" y="112">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_5" x="672" y="112">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db8" x="924" y="112">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_3" x="378" y="126">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_6" x="770" y="126">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="db9" x="1022" y="126">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_4" x="476" y="140">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_7" x="868" y="140">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_5" x="574" y="154">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_8" x="966" y="154">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="env/ahd" uuid="2139369d6de2ba5ddf76e602d1d25df653ca9eed" name="ahd_1" x="56" y="168">
+            <params>
+               <frac32.s.map name="a" value="-55.0"/>
+               <frac32.s.map name="d" value="-36.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_6" x="672" y="168">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_9" x="1064" y="168">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_7" x="770" y="182">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_8" x="868" y="196">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="86faca57-546a-4f5e-bfaf-13b86b8543f1" name="-c_1" x="182" y="210">
+            <params>
+               <frac32.s.map name="c" value="12.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="86faca57-546a-4f5e-bfaf-13b86b8543f1">
+               <sDescription>subtract constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.s.map name="c">
+                     <DefaultValue v="12.0"/>
+                  </frac32.s.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in- param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="osc/sine" uuid="6e094045cca76a9dbf7ebfa72e44e4700d2b3ba" name="sine_9" x="966" y="210">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780" name="+c_1" x="280" y="224">
+            <params>
+               <frac32.u.map name="c" value="6.979999542236328"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="6.98"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="86faca57-546a-4f5e-bfaf-13b86b8543f1" name="-c_2" x="378" y="238">
+            <params>
+               <frac32.s.map name="c" value="0.009999752044677734"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="86faca57-546a-4f5e-bfaf-13b86b8543f1">
+               <sDescription>subtract constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.s.map name="c">
+                     <DefaultValue v="0.01"/>
+                  </frac32.s.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in- param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780" name="+c_2" x="476" y="252">
+            <params>
+               <frac32.u.map name="c" value="12.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="12.0"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780" name="+c_3" x="574" y="266">
+            <params>
+               <frac32.u.map name="c" value="18.979999542236328"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="18.98"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780" name="+c_4" x="672" y="280">
+            <params>
+               <frac32.u.map name="c" value="24.019999980926514"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="24.02"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780" name="+c_5" x="770" y="294">
+            <params>
+               <frac32.u.map name="c" value="28.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="28.0"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780" name="+c_6" x="868" y="308">
+            <params>
+               <frac32.u.map name="c" value="31.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="31.0"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780" name="+c_7" x="966" y="322">
+            <params>
+               <frac32.u.map name="c" value="36.019999980926514"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="83d2f599-8698-4158-a383-ac8db5e85780">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="36.02"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="mix/mix 3" uuid="8be16f2156012a4a8974804178cece51555f272b" name="mix_1" x="0" y="336">
+            <params>
+               <frac32.u.map name="gain1" value="32.0"/>
+               <frac32.u.map name="gain2" value="32.0"/>
+               <frac32.u.map name="gain3" value="32.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="mix/mix 3" uuid="8be16f2156012a4a8974804178cece51555f272b" name="mix_2" x="84" y="336">
+            <params>
+               <frac32.u.map name="gain1" value="32.0"/>
+               <frac32.u.map name="gain2" value="32.0"/>
+               <frac32.u.map name="gain3" value="32.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="mix/mix 3" uuid="8be16f2156012a4a8974804178cece51555f272b" name="mix_3" x="168" y="336">
+            <params>
+               <frac32.u.map name="gain1" value="32.0"/>
+               <frac32.u.map name="gain2" value="32.0"/>
+               <frac32.u.map name="gain3" value="32.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_10" x="308" y="420">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="mix/mix 2" uuid="30c04239c88e09d3fa5c333b784ecf54f1b0e268" name="mix_5" x="392" y="420">
+            <params>
+               <frac32.u.map name="gain1" value="32.0"/>
+               <frac32.u.map name="gain2" value="32.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="patch/outlet a" uuid="abd8c5fd3b0524a6630f65cad6dc27f6c58e2a3e" name="outlet_1" x="742" y="462">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="logic/and 2" uuid="c67031682f552aa0a80b23377495c51ea28a8c9c" name="and_1" x="84" y="574">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="logic/and 2" uuid="c67031682f552aa0a80b23377495c51ea28a8c9c" name="and_2" x="168" y="574">
+            <params/>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="a16195b2-ecc9-498e-b486-be80b7929089" name="d_1____tmp" x="252" y="574">
+            <params>
+               <frac32.s.map name="d" value="-10.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="a16195b2-ecc9-498e-b486-be80b7929089">
+               <sDescription>decay envelope</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>env.axh</helpPatch>
+               <inlets>
+                  <bool32.rising name="trig" description="trigger"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="env" description="envelope output"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.s.map.kdecaytime.exp name="d" noLabel="true">
+                     <DefaultValue v="-10.0"/>
+                  </frac32.s.map.kdecaytime.exp>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.declaration><![CDATA[int32_t val;
+int ntrig;]]></code.declaration>
+               <code.init><![CDATA[val = 0;
+ntrig = 0;]]></code.init>
+               <code.krate><![CDATA[if ((inlet_trig>0) && !ntrig) { val =1<<27; ntrig=1;}
+   else { if (!(inlet_trig>0)) ntrig=0; val = ___SMMUL(val, param_d)<<1;}
+   outlet_env = val;]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="math/+" uuid="44553fdc8628c67ab535845ed1be304ad6c9553b" name="+_1" x="364" y="574">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_1" x="434" y="574">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_2" x="504" y="574">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_12" x="574" y="574">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="perc on" x="0" y="588">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="perc volume" x="0" y="630">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="logic/inv" uuid="2bd44b865d3b63ff9b80862242bf5be779e3ad5" name="inv_1" x="98" y="630">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="logic/and 2" uuid="c67031682f552aa0a80b23377495c51ea28a8c9c" name="and_3" x="168" y="630">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_3" x="504" y="630">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_13" x="574" y="630">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="logic/inv" uuid="2bd44b865d3b63ff9b80862242bf5be779e3ad5" name="inv_2" x="392" y="644">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="perc decay" x="0" y="672">
+            <params/>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="a16195b2-ecc9-498e-b486-be80b7929089" name="d_1____tmp_" x="252" y="686">
+            <params>
+               <frac32.s.map name="d" value="20.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="a16195b2-ecc9-498e-b486-be80b7929089">
+               <sDescription>decay envelope</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>env.axh</helpPatch>
+               <inlets>
+                  <bool32.rising name="trig" description="trigger"/>
+               </inlets>
+               <outlets>
+                  <frac32.positive name="env" description="envelope output"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.s.map.kdecaytime.exp name="d" noLabel="true">
+                     <DefaultValue v="20.0"/>
+                  </frac32.s.map.kdecaytime.exp>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.declaration><![CDATA[int32_t val;
+int ntrig;]]></code.declaration>
+               <code.init><![CDATA[val = 0;
+ntrig = 0;]]></code.init>
+               <code.krate><![CDATA[if ((inlet_trig>0) && !ntrig) { val =1<<27; ntrig=1;}
+   else { if (!(inlet_trig>0)) ntrig=0; val = ___SMMUL(val, param_d)<<1;}
+   outlet_env = val;]]></code.krate>
+            </object>
+         </patchobj>
+         <patchobj type="patch/object" uuid="c2aa5b57-fe46-4197-9698-08586e545593" name="+c_8" x="98" y="700">
+            <params>
+               <frac32.u.map name="c" value="13.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="c2aa5b57-fe46-4197-9698-08586e545593">
+               <sDescription>add constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="14.0"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in+ param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="math/div 8" uuid="4a6007f5cb2024c50e8449b3bb6bcaef6ac42edb" name="div_1" x="168" y="700">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="perc harmonic" x="0" y="714">
+            <params/>
+            <attribs/>
+         </obj>
+         <nets>
+            <net>
+               <source obj="sine_3" outlet="wave"/>
+               <dest obj="vca_3" inlet="a"/>
+            </net>
+            <net>
+               <source obj="sine_2" outlet="wave"/>
+               <dest obj="vca_2" inlet="a"/>
+            </net>
+            <net>
+               <source obj="sine_1" outlet="wave"/>
+               <dest obj="vca_1" inlet="a"/>
+            </net>
+            <net>
+               <source obj="db1" outlet="inlet"/>
+               <dest obj="vca_1" inlet="v"/>
+            </net>
+            <net>
+               <source obj="db2" outlet="inlet"/>
+               <dest obj="vca_2" inlet="v"/>
+            </net>
+            <net>
+               <source obj="db3" outlet="inlet"/>
+               <dest obj="vca_3" inlet="v"/>
+            </net>
+            <net>
+               <source obj="sine_4" outlet="wave"/>
+               <dest obj="vca_4" inlet="a"/>
+               <dest obj="vca_13" inlet="a"/>
+            </net>
+            <net>
+               <source obj="sine_5" outlet="wave"/>
+               <dest obj="vca_5" inlet="a"/>
+               <dest obj="vca_12" inlet="a"/>
+            </net>
+            <net>
+               <source obj="db7" outlet="inlet"/>
+               <dest obj="vca_7" inlet="v"/>
+            </net>
+            <net>
+               <source obj="db6" outlet="inlet"/>
+               <dest obj="vca_6" inlet="v"/>
+            </net>
+            <net>
+               <source obj="db5" outlet="inlet"/>
+               <dest obj="vca_5" inlet="v"/>
+            </net>
+            <net>
+               <source obj="db4" outlet="inlet"/>
+               <dest obj="vca_4" inlet="v"/>
+            </net>
+            <net>
+               <source obj="sine_9" outlet="wave"/>
+               <dest obj="vca_9" inlet="a"/>
+            </net>
+            <net>
+               <source obj="db8" outlet="inlet"/>
+               <dest obj="vca_8" inlet="v"/>
+            </net>
+            <net>
+               <source obj="db9" outlet="inlet"/>
+               <dest obj="vca_9" inlet="v"/>
+            </net>
+            <net>
+               <source obj="sine_6" outlet="wave"/>
+               <dest obj="vca_6" inlet="a"/>
+            </net>
+            <net>
+               <source obj="sine_7" outlet="wave"/>
+               <dest obj="vca_7" inlet="a"/>
+            </net>
+            <net>
+               <source obj="sine_8" outlet="wave"/>
+               <dest obj="vca_8" inlet="a"/>
+            </net>
+            <net>
+               <source obj="vca_1" outlet="o"/>
+               <dest obj="mix_1" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="vca_2" outlet="o"/>
+               <dest obj="mix_1" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="vca_3" outlet="o"/>
+               <dest obj="mix_1" inlet="in3"/>
+            </net>
+            <net>
+               <source obj="vca_4" outlet="o"/>
+               <dest obj="mix_2" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="vca_5" outlet="o"/>
+               <dest obj="mix_2" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="vca_6" outlet="o"/>
+               <dest obj="mix_2" inlet="in3"/>
+            </net>
+            <net>
+               <source obj="vca_7" outlet="o"/>
+               <dest obj="mix_3" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="vca_8" outlet="o"/>
+               <dest obj="mix_3" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="vca_9" outlet="o"/>
+               <dest obj="mix_3" inlet="in3"/>
+            </net>
+            <net>
+               <source obj="vca_10" outlet="o"/>
+               <dest obj="mix_5" inlet="bus_in"/>
+            </net>
+            <net>
+               <source obj="mix_1" outlet="out"/>
+               <dest obj="mix_2" inlet="bus_in"/>
+            </net>
+            <net>
+               <source obj="mix_2" outlet="out"/>
+               <dest obj="mix_3" inlet="bus_in"/>
+            </net>
+            <net>
+               <source obj="mix_3" outlet="out"/>
+               <dest obj="vca_10" inlet="a"/>
+            </net>
+            <net>
+               <source obj="keyb_1" outlet="gate"/>
+               <dest obj="and_1" inlet="i1"/>
+               <dest obj="ahd_1" inlet="gate"/>
+            </net>
+            <net>
+               <source obj="keyb_1" outlet="note"/>
+               <dest obj="+c_1" inlet="in"/>
+               <dest obj="-c_1" inlet="in"/>
+               <dest obj="-c_2" inlet="in"/>
+               <dest obj="+c_2" inlet="in"/>
+               <dest obj="+c_3" inlet="in"/>
+               <dest obj="+c_4" inlet="in"/>
+               <dest obj="+c_5" inlet="in"/>
+               <dest obj="+c_6" inlet="in"/>
+               <dest obj="+c_7" inlet="in"/>
+            </net>
+            <net>
+               <source obj="-c_1" outlet="out"/>
+               <dest obj="sine_1" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="+c_1" outlet="out"/>
+               <dest obj="sine_2" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="-c_2" outlet="out"/>
+               <dest obj="sine_3" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="+c_2" outlet="out"/>
+               <dest obj="sine_4" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="+c_3" outlet="out"/>
+               <dest obj="sine_5" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="+c_4" outlet="out"/>
+               <dest obj="sine_6" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="+c_5" outlet="out"/>
+               <dest obj="sine_7" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="+c_6" outlet="out"/>
+               <dest obj="sine_8" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="+c_7" outlet="out"/>
+               <dest obj="sine_9" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="perc on" outlet="inlet"/>
+               <dest obj="and_1" inlet="i2"/>
+            </net>
+            <net>
+               <source obj="perc decay" outlet="inlet"/>
+               <dest obj="inv_1" inlet="i"/>
+               <dest obj="and_3" inlet="i1"/>
+            </net>
+            <net>
+               <source obj="inv_1" outlet="o"/>
+               <dest obj="and_2" inlet="i1"/>
+            </net>
+            <net>
+               <source obj="and_1" outlet="o"/>
+               <dest obj="and_2" inlet="i2"/>
+               <dest obj="and_3" inlet="i2"/>
+            </net>
+            <net>
+               <source obj="d_1____tmp" outlet="env"/>
+               <dest obj="+_1" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="+_1" outlet="out"/>
+               <dest obj="*_1" inlet="a"/>
+            </net>
+            <net>
+               <source obj="*_1" outlet="result"/>
+               <dest obj="*_2" inlet="a"/>
+               <dest obj="*_3" inlet="a"/>
+            </net>
+            <net>
+               <source obj="perc harmonic" outlet="inlet"/>
+               <dest obj="inv_2" inlet="i"/>
+               <dest obj="*_2" inlet="b"/>
+            </net>
+            <net>
+               <source obj="inv_2" outlet="o"/>
+               <dest obj="*_3" inlet="b"/>
+            </net>
+            <net>
+               <source obj="*_2" outlet="result"/>
+               <dest obj="vca_12" inlet="v"/>
+            </net>
+            <net>
+               <source obj="*_3" outlet="result"/>
+               <dest obj="vca_13" inlet="v"/>
+            </net>
+            <net>
+               <source obj="vca_12" outlet="o"/>
+               <dest obj="mix_5" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="vca_13" outlet="o"/>
+               <dest obj="mix_5" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="mix_5" outlet="out"/>
+               <dest obj="outlet_1" inlet="outlet"/>
+            </net>
+            <net>
+               <source obj="and_2" outlet="o"/>
+               <dest obj="d_1____tmp" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="and_3" outlet="o"/>
+               <dest obj="d_1____tmp_" inlet="trig"/>
+            </net>
+            <net>
+               <source obj="d_1____tmp_" outlet="env"/>
+               <dest obj="+_1" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="perc volume" outlet="inlet"/>
+               <dest obj="+c_8" inlet="in"/>
+            </net>
+            <net>
+               <source obj="+c_8" outlet="out"/>
+               <dest obj="div_1" inlet="in"/>
+            </net>
+            <net>
+               <source obj="div_1" outlet="out"/>
+               <dest obj="*_1" inlet="b"/>
+            </net>
+            <net>
+               <source obj="ahd_1" outlet="env"/>
+               <dest obj="vca_10" inlet="v"/>
+            </net>
+         </nets>
+         <settings>
+            <subpatchmode>polyphonic</subpatchmode>
+            <MidiChannel>1</MidiChannel>
+            <NPresets>8</NPresets>
+            <NPresetEntries>32</NPresetEntries>
+            <NModulationSources>1</NModulationSources>
+            <NModulationTargetsPerSource>1</NModulationTargetsPerSource>
+         </settings>
+         <notes><![CDATA[]]></notes>
+         <windowPos>
+            <x>2261</x>
+            <y>269</y>
+            <width>1377</width>
+            <height>1261</height>
+         </windowPos>
+      </subpatch>
+   </patcher>
+   <obj type="ctrl/toggle" uuid="42b8134fa729d54bfc8d62d6ef3fa99498c1de99" name="toggle_2" x="476" y="42">
+      <params>
+         <bool32.tgl name="b" value="1"/>
+      </params>
+      <attribs/>
+   </obj>
+   <obj type="math/c 1" uuid="2e882f6ca7dfeea2ff3841432b0e8f757fdff6d7" name="c_1" x="224" y="112">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="audio/out stereo" uuid="a1ca7a567f535acc21055669829101d3ee7f0189" name="out_1" x="658" y="112">
+      <params/>
+      <attribs/>
+   </obj>
+   <patcher type="patch/patcher" uuid="017c6318-c554-4f30-b6b7-77c597c451cb" name="vib/chor" x="420" y="126">
+      <params>
+         <frac32.s.map name="speed" value="4.979999542236328"/>
+      </params>
+      <attribs/>
+      <subpatch appVersion="1.0.12">
+         <obj type="patch/inlet a" uuid="b577fe41e0a6bc7b5502ce33cb8a3129e2e28ee5" name="in" x="0" y="0">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="delay/write" uuid="bd73958e3830021807ee97a8cff4500a72a5710d" name="dela" x="84" y="0">
+            <params/>
+            <attribs>
+               <combo attributeName="size" selection="512 (10.66ms)"/>
+            </attribs>
+         </obj>
+         <obj type="conv/interp" uuid="d68c1a8709d8b55e3de8715d727ec0a2d8569d9a" name="interp_1" x="196" y="0">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="delay/read interp" uuid="e3d8b8823ab551c588659520bf6cc25c630466c7" name="delread21" x="266" y="0">
+            <params>
+               <frac32.u.map name="time" value="1.0"/>
+            </params>
+            <attribs>
+               <objref attributeName="delayname" obj="dela"/>
+            </attribs>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="420" y="0">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="mix/mix 2" uuid="30c04239c88e09d3fa5c333b784ecf54f1b0e268" name="mix_1" x="518" y="0">
+            <params>
+               <frac32.u.map name="gain1" value="32.0"/>
+               <frac32.u.map name="gain2" value="32.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="patch/outlet a" uuid="abd8c5fd3b0524a6630f65cad6dc27f6c58e2a3e" name="vcout" x="798" y="0">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="wet" x="0" y="42">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="lfo/sine" uuid="75f7330c26a13953215dccc3b7b9008545c9daa9" name="speed" x="84" y="56">
+            <params>
+               <frac32.s.map name="pitch" onParent="true" value="4.979999542236328"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_2" x="420" y="56">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="dry" x="0" y="84">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_1" x="196" y="84">
+            <params/>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="471ccbf3-c5f2-4fc9-9082-5844cf8220f0" name="dial_1" x="266" y="98">
+            <params>
+               <frac32.u.map name="value" value="0.7999997138977051"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="471ccbf3-c5f2-4fc9-9082-5844cf8220f0">
+               <sDescription>positive constant value dial</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>ctrl.axh</helpPatch>
+               <inlets/>
+               <outlets>
+                  <frac32.positive name="out" description="output"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="value" noLabel="true">
+                     <DefaultValue v="0.8"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= param_value;]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="math/div 2" uuid="f14884de1baf3e615e12ee162a96a013eca76789" name="div_3" x="336" y="98">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet b" uuid="3b0d3eacb5bb978cb05d1372aa2714d5a4790844" name="depth" x="0" y="126">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="conv/bipolar2unipolar" uuid="f6f63d71053d572d3c795f83c7ec11dfbbce82dd" name="bipolar2unipolar1" x="84" y="140">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="mux/mux 2" uuid="3bcb8a666381ed18b8962eda50b1aa679136f618" name="mux_1" x="336" y="140">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet a" uuid="b577fe41e0a6bc7b5502ce33cb8a3129e2e28ee5" name="leslie_in" x="0" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="lfo/sine" uuid="75f7330c26a13953215dccc3b7b9008545c9daa9" name="speed_" x="140" y="210">
+            <params>
+               <frac32.s.map name="pitch" value="0.0"/>
+            </params>
+            <attribs/>
+         </obj>
+         <obj type="conv/bipolar2unipolar" uuid="f6f63d71053d572d3c795f83c7ec11dfbbce82dd" name="bipolar2unipolar1_" x="238" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_2" x="364" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/+" uuid="44553fdc8628c67ab535845ed1be304ad6c9553b" name="+_4" x="420" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_5" x="490" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/+" uuid="44553fdc8628c67ab535845ed1be304ad6c9553b" name="+_1" x="546" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_4" x="616" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/outlet a" uuid="abd8c5fd3b0524a6630f65cad6dc27f6c58e2a3e" name="L" x="672" y="210">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/inlet f" uuid="5c585d2dcd9c05631e345ac09626a22a639d7c13" name="width" x="0" y="252">
+            <params/>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="03d6bd3f-f4a1-4059-832a-46dae115af72" name="&gt;c_1" x="0" y="294">
+            <params>
+               <frac32.u.map name="c" value="6.899999618530273"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="03d6bd3f-f4a1-4059-832a-46dae115af72">
+               <sDescription>greater than constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <bool32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="6.9"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in> param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="math/inv" uuid="565521d3699b36d8095aa1c79b9ad0046fb133ce" name="inv_1" x="182" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="conv/bipolar2unipolar" uuid="f6f63d71053d572d3c795f83c7ec11dfbbce82dd" name="bipolar2unipolar1__" x="238" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_3" x="364" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/+" uuid="44553fdc8628c67ab535845ed1be304ad6c9553b" name="+_3" x="420" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/*" uuid="922423f2db9f222aa3e5ba095778288c446da47a" name="*_4" x="490" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/+" uuid="44553fdc8628c67ab535845ed1be304ad6c9553b" name="+_2" x="546" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_3" x="616" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="patch/outlet a" uuid="abd8c5fd3b0524a6630f65cad6dc27f6c58e2a3e" name="R" x="672" y="294">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="logic/inv" uuid="2bd44b865d3b63ff9b80862242bf5be779e3ad5" name="inv_2" x="70" y="350">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/div 2" uuid="f14884de1baf3e615e12ee162a96a013eca76789" name="div_1" x="126" y="350">
+            <params/>
+            <attribs/>
+         </obj>
+         <patchobj type="patch/object" uuid="baee2d5f-90a9-433a-b54b-6af94d114d0b" name="-c_1" x="0" y="392">
+            <params>
+               <frac32.u.map name="c" value="2.0"/>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="baee2d5f-90a9-433a-b54b-6af94d114d0b">
+               <sDescription>subtract constant</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="in"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="out"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map name="c" noLabel="true">
+                     <DefaultValue v="2.0"/>
+                  </frac32.u.map>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= inlet_in- param_c;]]></code.krate>
+            </object>
+         </patchobj>
+         <obj type="math/c 64" uuid="9116584b9960241e86c12effea4ce12d13871e77" name="c_1" x="280" y="420">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/-" uuid="3280bb759e9fc189e134300e48dda7e903c9a110" name="-_1" x="350" y="420">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="math/div 2" uuid="f14884de1baf3e615e12ee162a96a013eca76789" name="div_2" x="420" y="420">
+            <params/>
+            <attribs/>
+         </obj>
+         <obj type="midi/in/cc hr i" uuid="72d8018c0f072c469fcd902b0423ba8fd5e6433" name="cc_1" x="0" y="490">
+            <params/>
+            <attribs>
+               <spinner attributeName="cc" value="1"/>
+               <spinner attributeName="default" value="0"/>
+            </attribs>
+         </obj>
+         <patchobj type="patch/object" uuid="cd4341c2-3b69-4999-8707-2bc9f24cf588" name="*c_1" x="84" y="490">
+            <params>
+               <frac32.u.map name="amp" value="8.0">
+                  <presets/>
+               </frac32.u.map>
+            </params>
+            <attribs/>
+            <object id="patch/object" uuid="cd4341c2-3b69-4999-8707-2bc9f24cf588">
+               <sDescription>Multiply (attenuate) with a constant value</sDescription>
+               <author>Johannes Taelman</author>
+               <license>BSD</license>
+               <helpPatch>math.axh</helpPatch>
+               <inlets>
+                  <frac32 name="in" description="input"/>
+               </inlets>
+               <outlets>
+                  <frac32 name="out" description="output"/>
+               </outlets>
+               <displays/>
+               <params>
+                  <frac32.u.map.gain name="amp" noLabel="true">
+                     <DefaultValue v="8.0"/>
+                  </frac32.u.map.gain>
+               </params>
+               <attribs/>
+               <includes/>
+               <code.krate><![CDATA[outlet_out= ___SMMUL(param_amp,inlet_in)<<1;]]></code.krate>
+            </object>
+         </patchobj>
+         <nets>
+            <net>
+               <source obj="in" outlet="inlet"/>
+               <dest obj="dela" inlet="in"/>
+               <dest obj="vca_2" inlet="a"/>
+            </net>
+            <net>
+               <source obj="delread21" outlet="out"/>
+               <dest obj="vca_1" inlet="a"/>
+            </net>
+            <net>
+               <source obj="speed" outlet="wave"/>
+               <dest obj="bipolar2unipolar1" inlet="i"/>
+            </net>
+            <net>
+               <source obj="bipolar2unipolar1" outlet="o"/>
+               <dest obj="*_1" inlet="a"/>
+            </net>
+            <net>
+               <source obj="*_1" outlet="result"/>
+               <dest obj="interp_1" inlet="i"/>
+            </net>
+            <net>
+               <source obj="interp_1" outlet="o"/>
+               <dest obj="delread21" inlet="time"/>
+            </net>
+            <net>
+               <source obj="wet" outlet="inlet"/>
+               <dest obj="vca_1" inlet="v"/>
+            </net>
+            <net>
+               <source obj="vca_1" outlet="o"/>
+               <dest obj="mix_1" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="dry" outlet="inlet"/>
+               <dest obj="vca_2" inlet="v"/>
+            </net>
+            <net>
+               <source obj="vca_2" outlet="o"/>
+               <dest obj="mix_1" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="mix_1" outlet="out"/>
+               <dest obj="vcout" inlet="outlet"/>
+            </net>
+            <net>
+               <source obj="speed_" outlet="wave"/>
+               <dest obj="bipolar2unipolar1_" inlet="i"/>
+               <dest obj="inv_1" inlet="in"/>
+            </net>
+            <net>
+               <source obj="bipolar2unipolar1_" outlet="o"/>
+               <dest obj="*_2" inlet="a"/>
+            </net>
+            <net>
+               <source obj="bipolar2unipolar1__" outlet="o"/>
+               <dest obj="*_3" inlet="a"/>
+            </net>
+            <net>
+               <source obj="inv_1" outlet="out"/>
+               <dest obj="bipolar2unipolar1__" inlet="i"/>
+            </net>
+            <net>
+               <source obj="*c_1" outlet="out"/>
+               <dest obj="-c_1" inlet="in"/>
+            </net>
+            <net>
+               <source obj="cc_1" outlet="midiCC"/>
+               <dest obj="&gt;c_1" inlet="in"/>
+               <dest obj="*c_1" inlet="in"/>
+            </net>
+            <net>
+               <source obj="&gt;c_1" outlet="out"/>
+               <dest obj="inv_2" inlet="i"/>
+               <dest obj="*_4" inlet="b"/>
+               <dest obj="*_5" inlet="b"/>
+            </net>
+            <net>
+               <source obj="*_2" outlet="result"/>
+               <dest obj="+_4" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="*_3" outlet="result"/>
+               <dest obj="+_3" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="*_5" outlet="result"/>
+               <dest obj="+_1" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="*_4" outlet="result"/>
+               <dest obj="+_2" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="inv_2" outlet="o"/>
+               <dest obj="div_1" inlet="in"/>
+            </net>
+            <net>
+               <source obj="+_2" outlet="out"/>
+               <dest obj="vca_3" inlet="v"/>
+            </net>
+            <net>
+               <source obj="leslie_in" outlet="inlet"/>
+               <dest obj="vca_4" inlet="a"/>
+               <dest obj="vca_3" inlet="a"/>
+            </net>
+            <net>
+               <source obj="vca_4" outlet="o"/>
+               <dest obj="L" inlet="outlet"/>
+            </net>
+            <net>
+               <source obj="vca_3" outlet="o"/>
+               <dest obj="R" inlet="outlet"/>
+            </net>
+            <net>
+               <source obj="+_1" outlet="out"/>
+               <dest obj="vca_4" inlet="v"/>
+            </net>
+            <net>
+               <source obj="-c_1" outlet="out"/>
+               <dest obj="speed_" inlet="pitch"/>
+            </net>
+            <net>
+               <source obj="width" outlet="inlet"/>
+               <dest obj="-_1" inlet="in2"/>
+               <dest obj="*_3" inlet="b"/>
+               <dest obj="*_2" inlet="b"/>
+            </net>
+            <net>
+               <source obj="+_4" outlet="out"/>
+               <dest obj="*_5" inlet="a"/>
+            </net>
+            <net>
+               <source obj="+_3" outlet="out"/>
+               <dest obj="*_4" inlet="a"/>
+            </net>
+            <net>
+               <source obj="c_1" outlet="o"/>
+               <dest obj="-_1" inlet="in1"/>
+            </net>
+            <net>
+               <source obj="div_1" outlet="out"/>
+               <dest obj="+_2" inlet="in2"/>
+               <dest obj="+_1" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="div_2" outlet="out"/>
+               <dest obj="+_4" inlet="in2"/>
+               <dest obj="+_3" inlet="in2"/>
+            </net>
+            <net>
+               <source obj="-_1" outlet="out"/>
+               <dest obj="div_2" inlet="in"/>
+            </net>
+            <net>
+               <source obj="dial_1" outlet="out"/>
+               <dest obj="div_3" inlet="in"/>
+               <dest obj="mux_1" inlet="i1"/>
+            </net>
+            <net>
+               <source obj="depth" outlet="inlet"/>
+               <dest obj="mux_1" inlet="s"/>
+            </net>
+            <net>
+               <source obj="div_3" outlet="out"/>
+               <dest obj="mux_1" inlet="i2"/>
+            </net>
+            <net>
+               <source obj="mux_1" outlet="o"/>
+               <dest obj="*_1" inlet="b"/>
+            </net>
+         </nets>
+         <settings>
+            <subpatchmode>normal</subpatchmode>
+            <MidiChannel>1</MidiChannel>
+            <NPresets>8</NPresets>
+            <NPresetEntries>32</NPresetEntries>
+            <NModulationSources>8</NModulationSources>
+            <NModulationTargetsPerSource>8</NModulationTargetsPerSource>
+            <Author>jt</Author>
+            <License>viral!</License>
+         </settings>
+         <notes><![CDATA[A simple stereo chorus, based on two out-of-phase sine-wave modulated linear interpolating delayline readers.
+]]></notes>
+         <windowPos>
+            <x>2161</x>
+            <y>1203</y>
+            <width>1397</width>
+            <height>1056</height>
+         </windowPos>
+      </subpatch>
+   </patcher>
+   <patchobj type="patch/object" uuid="200e37ef-c1b3-4aa3-b076-796c9aef610b" name="dial_1" x="224" y="182">
+      <params>
+         <frac32.u.map name="value" value="64.0">
+            <presets/>
+         </frac32.u.map>
+      </params>
+      <attribs/>
+      <object id="patch/object" uuid="200e37ef-c1b3-4aa3-b076-796c9aef610b">
+         <sDescription>positive constant value dial</sDescription>
+         <author>Johannes Taelman</author>
+         <license>BSD</license>
+         <helpPatch>ctrl.axh</helpPatch>
+         <inlets/>
+         <outlets>
+            <frac32.positive name="out" description="output"/>
+         </outlets>
+         <displays/>
+         <params>
+            <frac32.u.map name="value" noLabel="true">
+               <DefaultValue v="64.0"/>
+            </frac32.u.map>
+         </params>
+         <attribs/>
+         <includes/>
+         <code.krate><![CDATA[outlet_out= param_value;]]></code.krate>
+      </object>
+   </patchobj>
+   <patchobj type="patch/object" uuid="adec7928-ac6d-4279-a295-1a9d023fcf83" name="verb1_1" x="420" y="336">
+      <params>
+         <frac32.u.map name="mix" value="18.5"/>
+         <frac32.u.map name="feed" value="18.5"/>
+      </params>
+      <attribs/>
+      <object id="patch/object" uuid="adec7928-ac6d-4279-a295-1a9d023fcf83">
+         <sDescription>Very simple stereo reverb. Got a metallic touch to it, but still pretty decent sound. 14%</sDescription>
+         <author>Jaffasplaffa (Original by Johannes Taelman)</author>
+         <license>BSD</license>
+         <helpPatch>allpass.axh</helpPatch>
+         <inlets>
+            <frac32buffer name="l" description="in"/>
+            <frac32buffer name="r"/>
+            <bool32 name="on"/>
+         </inlets>
+         <outlets>
+            <frac32buffer name="l" description="out"/>
+            <frac32buffer name="r"/>
+         </outlets>
+         <displays/>
+         <params>
+            <frac32.u.map name="mix"/>
+            <frac32.u.map name="feed"/>
+         </params>
+         <attribs/>
+         <includes/>
+         <code.declaration><![CDATA[int32_t *d1;
+int dpos1;
+
+
+int32_t *d2;
+int dpos2;
+
+
+int32_t *d3;
+int dpos3;
+
+
+int32_t *d4;
+int dpos4;
+
+
+int32_t *d5;
+int dpos5;
+
+
+int32_t *d6;
+int dpos6;
+
+
+int32_t *d7;
+int dpos7;
+
+
+int32_t *d8;
+int dpos8;
+
+
+
+int32_t ATOB;
+int32_t BTOC;
+int32_t CTOD;
+int32_t D;
+
+int32_t ETOF;
+int32_t FTOG;
+int32_t GTOH;
+int32_t H;
+
+int32_t feedL;
+int32_t feedR;
+
+int32_t feedLOUT;
+int32_t feedROUT;]]></code.declaration>
+         <code.init><![CDATA[static int32_t _array[attr_poly][1035]  __attribute__ ((section (".sdram")));
+d1 = &_array[parent->polyIndex][0];
+int i1;
+for (i1=0;i1<1035;i1++)
+   d1[i1] = 0;
+dpos1 = 0;
+
+
+
+
+static int32_t _array2[attr_poly][1679]  __attribute__ ((section (".sdram")));
+d2 = &_array2[parent->polyIndex][0];
+int i2;
+for (i2=0;i2<1679;i2++)
+   d2[i2] = 0;
+dpos2 = 0;
+
+
+
+
+static int32_t _array3[attr_poly][1943]  __attribute__ ((section (".sdram")));
+d3 = &_array3[parent->polyIndex][0];
+int i3;
+for (i3=0;i3<1943;i3++)
+   d3[i3] = 0;
+dpos3 = 0;
+
+
+
+
+static int32_t _array4[attr_poly][3136]  __attribute__ ((section (".sdram")));
+d4 = &_array4[parent->polyIndex][0];
+int i4;
+for (i4=0;i4<3136;i4++)
+   d4[i4] = 0;
+dpos4 = 0;
+
+
+
+
+
+
+static int32_t _array5[attr_poly][1056]  __attribute__ ((section (".sdram")));
+d5 = &_array5[parent->polyIndex][0];
+int i5;
+for (i5=0;i5<1056;i5++)
+   d5[i5] = 0;
+dpos5 = 0;
+
+
+
+static int32_t _array6[attr_poly][1687]  __attribute__ ((section (".sdram")));
+d6 = &_array6[parent->polyIndex][0];
+int i6;
+for (i6=0;i6<1687;i6++)
+   d6[i6] = 0;
+dpos6 = 0;
+
+
+
+static int32_t _array7[attr_poly][1959]  __attribute__ ((section (".sdram")));
+d7 = &_array7[parent->polyIndex][0];
+int i7;
+for (i7=0;i7<1959;i7++)
+   d7[i7] = 0;
+dpos7 = 0;
+
+
+static int32_t _array8[attr_poly][2933]  __attribute__ ((section (".sdram")));
+d8 = &_array8[parent->polyIndex][0];
+int i8;
+for (i8=0;i8<2933;i8++)
+   d8[i8] = 0;
+dpos8 = 0;]]></code.init>
+         <code.krate><![CDATA[int32_t g21 = (1+(39<<21))<<4;
+
+int32_t g22 = (1+(36<<21))<<4;
+
+int32_t g23 = (1+(60<<21))<<4;
+
+int32_t g24 = (1+(25<<21))<<4;
+
+int32_t g25 = (1+(39<<21))<<4;
+
+int32_t g26 = (1+(36<<21))<<4;
+
+int32_t g27 = (1+(60<<21))<<4;
+
+int32_t g28 = (1+(25<<21))<<4;
+
+
+   int32_t ccompl1 = ((128<<20)-param_mix);
+
+
+   int32_t ccompl2 = ((128<<20)-param_mix);]]></code.krate>
+         <code.srate><![CDATA[// On/Off //
+int32_t OOL= (inlet_on)?inlet_l:0;
+int32_t OOR= (inlet_on)?inlet_r:0;
+
+// Feedback //
+feedL= ___SMMUL(-feedLOUT<<3,param_feed<<2);
+feedR= ___SMMUL(-feedROUT<<3,param_feed<<2);
+
+
+
+// Left 1-4 //
+int32_t dout1 =  d1[dpos1]<<16;
+int32_t din1 = ___SMMLA(g21,dout1,OOL+feedL>>1);
+d1[dpos1++]=din1>>15;
+ATOB = ___SMMLS(g21,din1<<1,dout1>>1)<<1;
+if (dpos1 == 1035) dpos1 = 0;
+
+int32_t dout2 =  d2[dpos2]<<16;
+int32_t din2 = ___SMMLA(g22,dout2,ATOB>>1);
+d2[dpos2++]=din2>>15;
+BTOC = ___SMMLS(g22,din2<<1,dout2>>1)<<1;
+if (dpos2 == 1679) dpos2 = 0;
+
+int32_t dout3 =  d3[dpos3]<<16;
+int32_t din3 = ___SMMLA(g23,dout3,BTOC>>1);
+d3[dpos3++]=din3>>15;
+CTOD = ___SMMLS(g23,din3<<1,dout3>>1)<<1;
+if (dpos3 == 1943) dpos3 = 0;
+
+int32_t dout4 =  d4[dpos4]<<16;
+int32_t din4 = ___SMMLA(g24,dout4,CTOD>>1);
+d4[dpos4++]=din4>>15;
+feedLOUT = ___SMMLS(g24,din4<<1,dout4>>1)<<1;
+if (dpos4 == 3136) dpos4 = 0;
+
+
+
+
+// Right 5-8 //
+int32_t dout5 =  d5[dpos5]<<16;
+int32_t din5 = ___SMMLA(g25,dout5,OOR+feedR>>1);
+d5[dpos5++]=din5>>15;
+ETOF = ___SMMLS(g25,din5<<1,dout5>>1)<<1;
+if (dpos5 == 1056) dpos5 = 0;
+
+int32_t dout6 =  d6[dpos6]<<16;
+int32_t din6 = ___SMMLA(g26,dout6,ETOF>>1);
+d6[dpos6++]=din6>>15;
+FTOG = ___SMMLS(g26,din6<<1,dout6>>1)<<1;
+if (dpos6 == 1687) dpos6 = 0;
+
+int32_t dout7 =  d7[dpos7]<<16;
+int32_t din7 = ___SMMLA(g27,dout7,FTOG>>1);
+d7[dpos7++]=din7>>15;
+GTOH = ___SMMLS(g27,din7<<1,dout7>>1)<<1;
+if (dpos7 == 1959) dpos7 = 0;
+
+int32_t dout8 =  d8[dpos8]<<16;
+int32_t din8 = ___SMMLA(g28,dout8,GTOH>>1);
+d8[dpos8++]=din8>>15;
+feedROUT = ___SMMLS(g28,din8<<1,dout8>>1)<<1;
+if (dpos8 == 2933) dpos8 = 0;
+
+
+
+   {
+      int64_t a1 = (int64_t)feedLOUT * param_mix;
+      a1 += (int64_t)inlet_l * ccompl1;
+      outlet_l= a1>>27;
+   }
+
+   {
+      int64_t a2 = (int64_t)feedROUT * param_mix;
+      a2 += (int64_t)inlet_r * ccompl2;
+      outlet_r= a2>>27;
+   }]]></code.srate>
+      </object>
+   </patchobj>
+   <obj type="midi/in/cc hr i" uuid="72d8018c0f072c469fcd902b0423ba8fd5e6433" name="cc_1" x="0" y="420">
+      <params/>
+      <attribs>
+         <spinner attributeName="cc" value="7"/>
+         <spinner attributeName="default" value="0"/>
+      </attribs>
+   </obj>
+   <obj type="gain/vca" uuid="a9f2dcd18043e2f47364e45cb8814f63c2a37c0d" name="vca_1" x="84" y="420">
+      <params/>
+      <attribs/>
+   </obj>
+   <obj type="patch/load" uuid="634bf1f8c313920d7f19fc402ba937fd1ee27802" name="load_1" x="602" y="546">
+      <params/>
+      <attribs>
+         <table attributeName="filename" table="../start.bin"/>
+      </attribs>
+   </obj>
+   <nets>
+      <net>
+         <source obj="voices" outlet="outlet_1"/>
+         <dest obj="vca_1" inlet="a"/>
+      </net>
+      <net>
+         <source obj="toggle_2" outlet="o"/>
+         <dest obj="vib/chor" inlet="dry"/>
+      </net>
+      <net>
+         <source obj="cc_1" outlet="midiCC"/>
+         <dest obj="vca_1" inlet="v"/>
+      </net>
+      <net>
+         <source obj="dial_1" outlet="out"/>
+         <dest obj="vib/chor" inlet="width"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d1"/>
+         <dest obj="voices" inlet="db1"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d2"/>
+         <dest obj="voices" inlet="db2"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d3"/>
+         <dest obj="voices" inlet="db3"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d4"/>
+         <dest obj="voices" inlet="db4"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d5"/>
+         <dest obj="voices" inlet="db5"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d6"/>
+         <dest obj="voices" inlet="db6"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d7"/>
+         <dest obj="voices" inlet="db7"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d8"/>
+         <dest obj="voices" inlet="db8"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="d9"/>
+         <dest obj="voices" inlet="db9"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="pdec"/>
+         <dest obj="voices" inlet="perc decay"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="pharm"/>
+         <dest obj="voices" inlet="perc harmonic"/>
+      </net>
+      <net>
+         <source obj="vib/chor" outlet="L"/>
+         <dest obj="out_1" inlet="left"/>
+      </net>
+      <net>
+         <source obj="vib/chor" outlet="R"/>
+         <dest obj="out_1" inlet="right"/>
+      </net>
+      <net>
+         <source obj="vca_1" outlet="o"/>
+         <dest obj="vib/chor" inlet="in"/>
+      </net>
+      <net>
+         <source obj="vib/chor" outlet="vcout"/>
+         <dest obj="verb1_1" inlet="l"/>
+      </net>
+      <net>
+         <source obj="verb1_1" outlet="l"/>
+         <dest obj="vib/chor" inlet="leslie_in"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="reverb"/>
+         <dest obj="verb1_1" inlet="on"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="chordepth"/>
+         <dest obj="vib/chor" inlet="depth"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="chorwet"/>
+         <dest obj="vib/chor" inlet="wet"/>
+      </net>
+      <net>
+         <source obj="c_1" outlet="o"/>
+         <dest obj="voices" inlet="perc volume"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="pvol"/>
+         <dest obj="voices" inlet="perc on"/>
+      </net>
+      <net>
+         <source obj="ardulink" outlet="pon"/>
+         <dest obj="load_1" inlet="trig"/>
+      </net>
+   </nets>
+   <settings>
+      <subpatchmode>no</subpatchmode>
+      <MidiChannel>1</MidiChannel>
+      <NPresets>8</NPresets>
+      <NPresetEntries>32</NPresetEntries>
+      <NModulationSources>8</NModulationSources>
+      <NModulationTargetsPerSource>8</NModulationTargetsPerSource>
+   </settings>
+   <notes><![CDATA[]]></notes>
+   <windowPos>
+      <x>2423</x>
+      <y>666</y>
+      <width>1148</width>
+      <height>1037</height>
+   </windowPos>
+</patch-1.0>
